@@ -141,9 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ---------- Mobile sticky CTA ----------
-  // Hidden while the hero or the form is on screen, so it never covers them.
+  // Hidden while the intro or the contact band is on screen, so it never covers them.
   const mobileCta = document.querySelector("[data-mobile-cta]");
-  const ctaTargets = [document.querySelector(".hero"), document.querySelector("#apply")].filter(Boolean);
+  const ctaTargets = [...document.querySelectorAll(".intro, .page-hero, #contact")];
 
   if (mobileCta && ctaTargets.length && "IntersectionObserver" in window) {
     const visible = new Set();
@@ -155,6 +155,8 @@ document.addEventListener("DOMContentLoaded", () => {
       mobileCta.classList.toggle("is-hidden", visible.size > 0);
     });
     ctaTargets.forEach((el) => ctaObserver.observe(el));
+  } else if (mobileCta) {
+    mobileCta.classList.remove("is-hidden");
   }
 
   // ---------- Copy email ----------
@@ -188,20 +190,4 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-year]").forEach((el) => {
     el.textContent = new Date().getFullYear();
   });
-
-  // ---------- Contact form ----------
-  // Placeholder until the GHL form embed or a form endpoint is connected.
-  const form = document.querySelector("[data-contact-form]");
-
-  if (form) {
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      if (!form.reportValidity()) return;
-
-      const status = form.querySelector(".form__status");
-      status.textContent =
-        "Thank you! Your inquiry has been received. We'll be in touch within one business day.";
-      form.reset();
-    });
-  }
 });

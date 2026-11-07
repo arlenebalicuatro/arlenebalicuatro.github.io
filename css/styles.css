@@ -10,6 +10,7 @@
   --taupe-deep:   #6B5A4C;
   --gold:         #B39B6B;
   --gold-text:    #6F5A31; /* Deep gold – gold-toned text on light backgrounds (passes 4.5:1) */
+  --gold-light:   #C2AB7E; /* Light gold – small gold text on navy (5.3:1; --gold is 4.4:1) */
   --navy:         #2F3942; /* Navy black – text, footer, dark sections (logo "A") */
   --sage:         #85937F; /* Sage green – checkmarks, icons, highlights (logo "J") */
   --sage-deep:    #5E6B59; /* Darker sage – sage text on light backgrounds */
@@ -104,8 +105,24 @@ h4 {
   letter-spacing: 0.02em;
 }
 
+p,
+li {
+  text-wrap: pretty;
+}
+
 p {
   margin: 0 0 1.2em;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--taupe-light);
+  color: var(--navy);
 }
 
 .container {
@@ -632,7 +649,7 @@ p {
 }
 
 .card p {
-  font-size: 1.05rem;
+  font-size: 1.125rem;
 }
 
 .card .text-link {
@@ -952,7 +969,7 @@ p {
   background: var(--ivory);
   color: var(--navy);
   font-family: var(--font-serif);
-  font-size: 1.05rem;
+  font-size: 1.125rem;
   transition: border-color var(--ease);
 }
 
@@ -1067,7 +1084,7 @@ p {
 .shot figcaption {
   margin-top: 16px;
   color: var(--taupe-deep);
-  font-size: 1.05rem;
+  font-size: 1.125rem;
   font-style: italic;
   text-align: center;
 }
@@ -1103,7 +1120,7 @@ p {
 
 /* Center a lone card on the last row of the 3-column grid */
 @media (min-width: 961px) {
-  .work-grid > .work-card:last-child:nth-child(3n + 1) {
+  .work-grid:not(.work-grid--single) > .work-card:last-child:nth-child(3n + 1) {
     grid-column: 2;
   }
 }
@@ -1162,7 +1179,7 @@ p {
 
 .work-card__body p {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.125rem;
 }
 
 @media (max-width: 960px) {
@@ -1271,18 +1288,18 @@ p {
 
 /* The light gold reads well on navy; the deeper text gold is for light backgrounds */
 .site-footer .logo__tag {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .site-footer p {
   max-width: 36ch;
   margin-top: 18px;
-  font-size: 1.05rem;
+  font-size: 1.125rem;
 }
 
 .footer__heading {
   margin-bottom: 16px;
-  color: var(--gold);
+  color: var(--gold-light);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.25em;
@@ -1305,7 +1322,7 @@ p {
 }
 
 .footer__list a:hover {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .site-footer .footer__bottom {
@@ -1373,7 +1390,7 @@ p {
 }
 
 .section--navy .eyebrow {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 /* Pain points */
@@ -1600,7 +1617,8 @@ p {
     transform: translateY(100%);
   }
 
-  .funnel .site-footer {
+  .funnel .site-footer,
+  body:has(.mobile-cta) .site-footer {
     padding-bottom: 96px;
   }
 }
@@ -1628,6 +1646,113 @@ p {
 
 .btn-row--center {
   justify-content: center;
+}
+
+/* Filled light button for the dark contact band */
+.btn--light {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--taupe-deep);
+}
+
+.btn--light:hover,
+.btn--light:focus-visible {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--ivory);
+}
+
+/* Text links standing on their own get a full tap height */
+.site-card__body .text-link,
+.inline-cta .text-link,
+.back-link {
+  display: inline-block;
+  padding: 10px 0;
+}
+
+/* One-line call to action after a section */
+.inline-cta {
+  max-width: none;
+  margin: 48px 0 0;
+  font-size: 1.2rem;
+  font-style: italic;
+  text-align: center;
+}
+
+/* Padded links underline with text-decoration so the line stays close to the words */
+.site-card__body .text-link,
+.inline-cta .text-link {
+  border-bottom: 0;
+  text-decoration: underline 1px transparent;
+  text-underline-offset: 5px;
+  transition: text-decoration-color var(--ease), color var(--ease);
+}
+
+.site-card__body .text-link:hover,
+.inline-cta .text-link:hover {
+  text-decoration-color: currentColor;
+}
+
+.inline-cta .text-link {
+  font-style: normal;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* A gallery with a single build */
+.work-grid--single {
+  grid-template-columns: minmax(0, 400px);
+  justify-content: center;
+}
+
+/* "What happens next" in the contact band */
+.next-steps__title {
+  margin: 56px 0 20px;
+  color: var(--ivory);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.next-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  text-align: left;
+}
+
+.next-steps li {
+  padding-top: 16px;
+  border-top: 1px solid rgba(246, 241, 233, 0.4);
+  counter-increment: step;
+}
+
+.next-steps li::before {
+  content: counter(step);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1;
+}
+
+.next-steps strong {
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .next-steps {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    max-width: 420px;
+  }
 }
 
 /* Intro (home hero) */
@@ -1667,7 +1792,9 @@ p {
 
   .intro__media {
     width: calc(100% - 14px);
+    max-width: 360px;
     justify-self: start;
+    margin-top: 8px;
   }
 }
 
@@ -1775,7 +1902,7 @@ p {
 
 .skill p {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.125rem;
 }
 
 @media (max-width: 960px) {
@@ -1814,6 +1941,11 @@ p {
 
 .back-link:hover {
   color: var(--gold-text);
+}
+
+.stats--3 {
+  max-width: 660px;
+  margin-bottom: 0;
 }
 
 .stats--4 {
@@ -1960,7 +2092,7 @@ p {
   color: var(--sage-deep);
   font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.02em;
   text-decoration: none;
   transition: background var(--ease), color var(--ease);
 }
@@ -1972,7 +2104,8 @@ p {
 
 .credential:hover,
 .credential:focus-visible {
-  background: var(--sage);
+  background: var(--sage-deep);
+  border-color: var(--sage-deep);
   color: var(--white);
 }
 
@@ -2095,7 +2228,7 @@ img.photo {
 }
 
 .cert__meta dt {
-  color: var(--gold);
+  color: var(--gold-light);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.22em;
@@ -2142,13 +2275,15 @@ img.photo {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px 32px;
-  margin: 32px 0 0;
+  gap: 0 32px;
+  margin: 20px 0 0;
   padding: 0;
   list-style: none;
 }
 
 .footer__inline a {
+  display: inline-block;
+  padding: 12px 0;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.2em;
@@ -2158,7 +2293,7 @@ img.photo {
 }
 
 .footer__inline a:hover {
-  color: var(--gold);
+  color: var(--gold-light);
 }
 
 .site-footer--simple .footer__bottom {
