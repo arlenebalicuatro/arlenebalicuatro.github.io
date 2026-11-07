@@ -28,7 +28,10 @@
   --t-hover: 180ms;
   --t-ui: 240ms;
   --t-open: 1200ms;
-  --stagger-line: 90ms;
+  --stagger-line: 120ms;
+  /* Soft spring (damping 0.75): arrives at ~37%, drifts ~3% past, settles. Sampled from
+     x(t) = 1 - e^(-zwt)(cos(wd t) + z/sqrt(1-z^2) sin(wd t)) */
+  --spring-soft: linear(0, 0.0275, 0.0969, 0.191, 0.298, 0.408, 0.514, 0.612, 0.7, 0.776, 0.839, 0.891, 0.933, 0.965, 0.989, 1.01, 1.02, 1.02, 1.03, 1.03, 1.03, 1.03, 1.02, 1.02, 1.02, 1.01, 1.01, 1.01, 1.01, 1, 1, 1, 1, 1, 1, 1, 0.999, 0.999, 0.999, 0.999, 1);
   --stagger-item: 80ms;
 
   /* The design is deliberately light-only */
@@ -2172,12 +2175,14 @@ img.photo {
   reduced motion or no script the page is simply the finished page.
 */
 
-/* Intro: headline lines rise from behind their baseline on load, all settled by ~1.2s */
+/* Intro: headline lines rise from behind a mask one by one, 120ms apart, on a soft spring;
+   the subcopy and buttons fade in once the last line has landed. Settled by ~1.5s.
+   The mask has room above the glyphs so the spring's small overshoot is never clipped. */
 .intro .line {
   display: block;
   overflow: hidden;
-  padding-bottom: 0.08em;
-  margin-bottom: -0.08em;
+  padding: 0.1em 0 0.08em;
+  margin: -0.1em 0 -0.08em;
 }
 
 .intro .line > [data-line] {
@@ -2186,9 +2191,17 @@ img.photo {
 
 @media (prefers-reduced-motion: no-preference) {
   .js .intro [data-line] {
-    transform: translateY(105%);
+    transform: translateY(110%);
     animation: line-up 900ms var(--ease-expo) forwards;
     animation-delay: calc(120ms + var(--i) * var(--stagger-line));
+  }
+
+  /* Browsers without linear() keep the smooth ease-out above */
+  @supports (animation-timing-function: linear(0, 1)) {
+    .js .intro [data-line] {
+      animation-duration: 1000ms;
+      animation-timing-function: var(--spring-soft);
+    }
   }
 
   .js .intro [data-load] {
@@ -2196,6 +2209,12 @@ img.photo {
     transform: translateY(12px);
     animation: rise-in 600ms var(--ease-out) forwards;
     animation-delay: var(--d, 0ms);
+  }
+
+  /* Subcopy and buttons only fade: the headline owns the movement */
+  .js .intro [data-load="fade"] {
+    transform: none;
+    animation-name: fade-in;
   }
 
   /* Section entrances: the parts of a section arrive in reading order, once */
@@ -2261,6 +2280,10 @@ img.photo {
 
 @keyframes rise-in {
   to { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  to { opacity: 1; }
 }
 
 @keyframes map-drift {
